@@ -6,5 +6,5 @@ def main():
 		s.sort();
 		s_max=max(s);
 		a=map(int,zeros(k));
-
+				
 main();
