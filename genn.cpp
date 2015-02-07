@@ -1,10 +1,12 @@
 #include <iostream>
-
+#include <cstdio>
+#include <cstdlib>
 using namespace std;
 int main(){
-	int a,b,c;
-	a=2;
-	b=2;
-	c=a^b;
-	cout<<c<<endl;
+	char *b;
+	b = (char *)malloc(sizeof(char));
+	int c;
+	while((c=fread(b,1,2,stdin))>0)
+		cout<<*b<<endl;
+	return 0;
 }
