@@ -14,4 +14,15 @@ int main(){
 		for(i=0; i<n; i++)
 			scanf("%d", notes+i);
 	}
+	for(s = (int)pow(2.0,n)-1; s>=0; s--){
+		i=0;
+		t = s;
+		sum=0;
+		while(t){
+			if( t%2 )	sum+=notes[i];
+			i++;
+			t/=2;
+		}
+		if(sum==m)
+	}
 }
