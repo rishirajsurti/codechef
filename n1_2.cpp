@@ -1,74 +1,88 @@
-#include <vector>
-#include <list>
-#include <map>
-#include <set>
-#include <deque>
-#include <stack>
-#include <bitset>
-#include <algorithm>
-#include <functional>
-#include <numeric>
-#include <utility>
-#include <sstream>
 #include <iostream>
-#include <iomanip>
-#include <cstdio>
-#include <cmath>
-#include <cstdlib>
-#include <ctime>
+#include <cstring>
+#include <cassert>
+#include <climits>
+#include <vector>
+#include <algorithm>
+
 using namespace std;
 
-typedef long long ll;
-typedef unsigned long long ull;
-typedef vector<int> VI;
-typedef pair<int,int> PI;
-typedef vector<pair<int,int> > VPI;
-typedef vector<string> VS;
+int ans[9000][200];
+char a[250];
+long long dist[200][200];
+vector<int> treasure;
+vector<bool> flag;
+int siz;
+int mask;		
 
-#define ST first
-#define ND second
-#define ALL(x)      x.begin(), x.end()
-#define FOR(i,n)    for(i=0;i<(n);++i)
-#define FORV(i,x)   for(i=0;i<x.size();++i)
-#define FORS(i,x)   for(i=0;i<x.length();++i)
-#define PB          push_back
-#define MP          make_pair
+long long best(int cur, int n){
 
-int treasures, last, target;
-char maze[30][30];
-bool visited[30][30];
-int dist[20][20], cx[20], cy[20], n, code[30][30], ind[30][30], dp[10000][20], rec;
+	if(cur==n*n)
+		return 0;
 
-int solve(){
-	int i,j;
-	rec = 0;
-	treasures = target = 0;
+	int y = (1<<siz)-1;
 
-	for(i=0; i<n; i++){
-		for(j=0; j<n; j++){
-			code[i][j]=ind[i][j] = 0;
-			if(maze[i][j] == '*'){
-				treasures++;
-				cx[treasures] = i;
-				cy[treasures] = j;
+	if(treasure.size()==0 || mask = y)
+		return dist[cur][n*n];
 
-				code[i][j]= (1<<(treasures-1));
-				target|=code[i][j];
-				ind[i][j] = treasures;
-			}
-		}
+	if(ans[mask][cur]!=-1)
+		return ans[mask][cur];
+	
+	long long ret = INT_MAX;
+
+	for(int i=0; i<siz; i++){
+		if( mask & (1<<i))
+			continue;
+		mask = mask | (1<<i);
+
+		ret = min( (long long)ret, best(treasure[i],n) + dist[cur][treasure[i]]);
+		mask = mask & (y - (1<<i));
 	}
+	ans[mask][cur] = ret;
+	return ans[mask][cur]
+
 }
 
 int main(){
-	int t,i;
-	scanf("%d",&t);
+	int t;
+	cin>>t;
 	while(t--){
-		scanf("%d", &n);
-		gets(maze[0]);
-		for(i=0; i<n; i++)
-			gets(maze[i]);
-		printf("%d\n", solve());
+
+		memset(ans, -1, sizeof(ans));
+		treasure.clear();
+		int n;
+		cin>>n;
+		for(int i=1; i<=n*n; i++){
+			cin>>a[i];
+			if(a[i]=='*')
+				treasure.push_back(i);
+		}
+		siz = treasure.size();
+		mask = 0;
+		for(int i=1; i<=n*n; i++){
+			for(int j=1; j<=n*n; j++){
+				if(i==j)
+					dist[i][j] = 0;
+				else
+					dist[i][j] = INT_MAX;
+
+				if(a[i] == '#' || a[j]=='#')
+					continue;
+
+				if( (j== i-1 && (j%n)) || (j==i+1 && (i%n)) || (j==i+n) || j==(i-n))
+					dist[i][j] = 1;
+
+			}
+		}
+		for(int k=1; k<=n*n; k++){
+			for(int i=1; i<=n*n; i++){
+				for(int j=1; j<=n*n; j++){
+					dist[i][j] = min(dist[i][j], dist[i][k] + dist[k][j]);
+				}
+			}
+		}
+
+		long long ans = best(1,n);
 	}
-	return 0;
+
 }
